@@ -2,23 +2,32 @@ defmodule Videoke.Accounts do
   @moduledoc """
   The Accounts context.
   """
+  alias Videoke.Repo
   alias Videoke.Accounts.User
 
   def list_users do
-    [
-      %User{id: "1", name: "Elaine Naomi", username: "elainenaomi"},
-      %User{id: "2", name: "Juliana Helena", username: "julianahelena"},
-      %User{id: "3", name: "Rachel Curioso", username: "rachelcurioso"}
-    ]
+    Repo.all(User)
   end
 
   def get_user(id) do
-    Enum.find(list_users(), fn map -> map.id == id end)
+    Repo.get(User, id)
+  end
+
+  def get_user!(id) do
+    Repo.get!(User, id)
   end
 
   def get_user_by(params) do
-    Enum.find(list_users(), fn map ->
-      Enum.all?(params, fn {key, val} -> Map.get(map, key) == val end)
-    end)
+    Repo.get_by(User, params)
+  end
+
+  def change_user(%User{} = user) do
+    User.changeset(user, %{})
+  end
+
+  def create_user(attrs \\ %{}) do
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert()
   end
 end
